@@ -1,0 +1,45 @@
+name: Analyze URLs
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get PR diff
+        id: pr
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const pr = await github.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            return pr.data;
+
+      - name: Extract and analyze URLs
+        id: analyze
+        run: |
+          # Use your preferred language and tools to implement the URL extraction and analysis
+          # For example, in Python, you might use the 're' module to extract URLs and 'requests' to analyze them
+          # This is a placeholder for your implementation
+          echo "Implement URL extraction and analysis here"
+
+      - name: Comment PR
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const output = steps.analyze.outputs.result;
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            });
