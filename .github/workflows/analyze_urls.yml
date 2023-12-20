@@ -24,7 +24,7 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.issue.number
             });
-            return pr.data;
+            return { base_sha: pr.data.base.sha, head_sha: pr.data.head.sha };
 
       - name: Extract and analyze URLs
         id: analyze
