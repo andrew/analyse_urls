@@ -32,11 +32,18 @@ jobs:
           echo "Implement URL extraction and analysis here"
 
       - name: Comment PR
+        id: comment
+        run: |
+          OUTPUT=$(echo "${{ steps.analyze.outputs.result }}")
+          echo "::set-output name=result::$OUTPUT"
+        shell: bash
+
+      - name: Post comment
         uses: actions/github-script@v3
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const output = steps.analyze.outputs.result;
+            const output = "${{ steps.comment.outputs.result }}";
             github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
