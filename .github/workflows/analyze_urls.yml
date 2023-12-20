@@ -24,10 +24,17 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.issue.number
             });
-            console.log(JSON.stringify(pr, null, 2));
             console.log(pr.data.base.sha);
             console.log(pr.data.head.sha);
             return { base_sha: pr.data.base.sha, head_sha: pr.data.head.sha };
+
+      - name: Debug steps context
+        id: debug
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            console.log(JSON.stringify(steps, null, 2));
 
       - name: Extract and analyze URLs
         id: analyze
