@@ -38,6 +38,9 @@ jobs:
         id: comment
         run: |
           OUTPUT=$(echo "${{ steps.analyze.outputs.result }}")
+          if [ -z "$OUTPUT" ]; then
+            OUTPUT="No URLs found to analyze."
+          fi
           echo "::set-output name=result::$OUTPUT"
         shell: bash
 
