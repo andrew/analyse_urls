@@ -13,26 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Get PR diff
-        id: pr
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const pr = await github.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number
-            });
-            console.log(pr.data.base.sha);
-            console.log(pr.data.head.sha);
-            return { base_sha: pr.data.base.sha, head_sha: pr.data.head.sha };
-
-      - name: Debug outputs
-        run: |
-          echo "Base SHA: ${{ steps.pr.outputs.base_sha }}"
-          echo "Head SHA: ${{ steps.pr.outputs.head_sha }}"
-
       - name: Extract and analyze URLs
         id: analyze
         run: |
@@ -49,7 +29,7 @@ jobs:
         run: npm install
       
       - name: Run script
-        run: node ${{ env.SCRIPT_PATH }} ${{ steps.pr.outputs.base_sha }} ${{ steps.pr.outputs.head_sha }}
+        run: node ${{ env.SCRIPT_PATH }} ${{ github.base_ref }} ${{ github.head_ref }}
 
       - name: Comment PR
         id: comment
