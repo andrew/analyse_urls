@@ -29,10 +29,20 @@ jobs:
       - name: Extract and analyze URLs
         id: analyze
         run: |
-          # Use your preferred language and tools to implement the URL extraction and analysis
-          # For example, in Python, you might use the 're' module to extract URLs and 'requests' to analyze them
-          # This is a placeholder for your implementation
-          echo "Implement URL extraction and analysis here"
+          echo "NODE_VERSION=14" >> $GITHUB_ENV
+          echo "SCRIPT_PATH=./extractUrls.js" >> $GITHUB_ENV
+        shell: bash
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Run script
+        run: node ${{ env.SCRIPT_PATH }} ${{ steps.pr.outputs.base_sha }} ${{ steps.pr.outputs.head_sha }}
 
       - name: Comment PR
         id: comment
