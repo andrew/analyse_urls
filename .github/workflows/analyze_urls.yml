@@ -31,12 +31,13 @@ jobs:
         run: npm install
       
       - name: Run script
+        id: analyze_urls
         run: node ${{ env.SCRIPT_PATH }} origin/${{ github.base_ref }} origin/${{ github.head_ref }}
 
       - name: Comment PR
         id: comment
         run: |
-          OUTPUT=$(echo "${{ steps.analyze.outputs.result }}")
+          OUTPUT=$(echo "${{ steps.analyze_urls.outputs.result }}")
           if [ -z "$OUTPUT" ]; then
             OUTPUT="No URLs found to analyze."
           fi
