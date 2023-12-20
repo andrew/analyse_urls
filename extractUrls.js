@@ -3,7 +3,6 @@ const headSha = process.argv[3];
 
 // extract repository url from diff
 const { execSync } = require('child_process');
-const fs = require('fs');
 
 function extractUrls(text) {
   const urlRegex = /(https?:\/\/[^\s\)]+)/g;
@@ -15,7 +14,7 @@ const command = `git diff ${baseSha} ${headSha}`;
 console.log(`Running command: ${command}`);
 
 const diff = execSync(command).toString();
-const urls = extractUrls(diff);
+const urls = [...new Set(extractUrls(diff))];
 
 if (urls) {
   console.log(urls.join('\n'));
