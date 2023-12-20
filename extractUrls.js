@@ -12,6 +12,8 @@ function extractUrls(text) {
 
 const command = `git diff ${baseSha} ${headSha}`;
 
+console.log(`Running command: ${command}`);
+
 const diff = execSync(command).toString();
 const urls = extractUrls(diff);
 
