@@ -5,6 +5,9 @@ on:
 
 jobs:
   analyze:
+    permissions:
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -26,17 +29,37 @@ jobs:
       - name: Extract and analyze URLs
         id: analyze
         run: |
-          # Use your preferred language and tools to implement the URL extraction and analysis
-          # For example, in Python, you might use the 're' module to extract URLs and 'requests' to analyze them
-          # This is a placeholder for your implementation
-          echo "Implement URL extraction and analysis here"
+          echo "NODE_VERSION=14" >> $GITHUB_ENV
+          echo "SCRIPT_PATH=./extractUrls.js" >> $GITHUB_ENV
+        shell: bash
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Run script
+        run: node ${{ env.SCRIPT_PATH }} ${{ steps.pr.outputs.base_sha }} ${{ steps.pr.outputs.head_sha }}
 
       - name: Comment PR
+        id: comment
+        run: |
+          OUTPUT=$(echo "${{ steps.analyze.outputs.result }}")
+          if [ -z "$OUTPUT" ]; then
+            OUTPUT="No URLs found to analyze."
+          fi
+          echo "::set-output name=result::$OUTPUT"
+        shell: bash
+
+      - name: Post comment
         uses: actions/github-script@v3
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const output = steps.analyze.outputs.result;
+            const output = "${{ steps.comment.outputs.result }}";
             github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
