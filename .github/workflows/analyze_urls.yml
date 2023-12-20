@@ -31,7 +31,7 @@ jobs:
         run: npm install
       
       - name: Run script
-        run: node ${{ env.SCRIPT_PATH }} ${{ github.base_ref }} ${{ github.head_ref }}
+        run: node ${{ env.SCRIPT_PATH }} origin/${{ github.base_ref }} origin/${{ github.head_ref }}
 
       - name: Comment PR
         id: comment
