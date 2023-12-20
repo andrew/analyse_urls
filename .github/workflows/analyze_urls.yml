@@ -24,6 +24,9 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.issue.number
             });
+            console.log(JSON.stringify(pr, null, 2));
+            console.log(pr.data.base.sha);
+            console.log(pr.data.head.sha);
             return { base_sha: pr.data.base.sha, head_sha: pr.data.head.sha };
 
       - name: Extract and analyze URLs
